@@ -211,10 +211,6 @@ section h2::before {
   justify-content: space-between;
 }
 
-#about p + p {
-  margin-top: 12px;
-}
-
 .chips {
   display: flex;
   flex-wrap: wrap;
