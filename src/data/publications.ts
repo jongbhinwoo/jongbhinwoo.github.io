@@ -48,7 +48,7 @@ export const publications: Publication[] = [
     title: "Speech Guided Masked Image Modeling for Visually Grounded Speech",
     authors: ["Jongbhin Woo", "Hyeonggon Ryu", "Arda Senocak", "Joon Son Chung"],
     venue: "ICASSP 2024",
-    venueFull: "IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+    venueFull: "IEEE International Conference on Acoustics, Speech and Signal Processing",
     date: "2024-04-14",
     pages: "8361--8365",
     doi: "10.1109/ICASSP48485.2024.10447235",

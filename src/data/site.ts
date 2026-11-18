@@ -73,7 +73,7 @@ export const projects: Entry[] = [
     title:
       "Non-face-to-face communication platform with user de-identification and fingerspelling-based input for privacy protection of deaf and hard-of-hearing people",
     org: "IITP, Ministry of Science and ICT",
-    detail: "Participating researcher",
+    detail: "Lead student researcher",
   },
   {
     period: "2022 – 2024",
