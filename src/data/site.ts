@@ -29,7 +29,7 @@ export interface Entry {
 
 export const education: Entry[] = [
   {
-    period: "Sep 2022 – Aug 2027 (expected)",
+    period: "Sep 2022 – present",
     title: "Integrated M.S.–Ph.D. in Electrical Engineering",
     org: "KAIST",
     detail: "Multimodal AI (MMAI) Lab · Advisor: Prof. Joon Son Chung",
