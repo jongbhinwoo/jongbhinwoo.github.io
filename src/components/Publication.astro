@@ -1,0 +1,50 @@
+---
+import type { NumberedPub } from "../lib/pubs";
+import { bibtex, isMe, links } from "../lib/pubs";
+
+interface Props {
+  pub: NumberedPub;
+}
+
+const { pub } = Astro.props;
+const bib = bibtex(pub);
+---
+
+<li class:list={["pub", { "no-thumb": !pub.thumb }]} data-first={String(pub.firstAuthor)}>
+  {
+    pub.thumb && (
+      <a class="pub-thumb" href={links(pub)[0]?.url}>
+        <img src={pub.thumb} alt="" loading="lazy" decoding="async" />
+      </a>
+    )
+  }
+  <div class="pub-body">
+    <div class="pub-badges">
+      <span class="pub-label">[{pub.label}]</span>
+      <span class="badge venue">{pub.venue}</span>
+      {pub.highlight && <span class="badge highlight">{pub.highlight}</span>}
+    </div>
+    <h3 class="pub-title">{pub.title}</h3>
+    <p class="pub-authors">
+      {
+        pub.authors.map((a, i) => (
+          <>
+            {isMe(a) ? <strong>{a}</strong> : a}
+            {i < pub.authors.length - 1 && ", "}
+          </>
+        ))
+      }
+    </p>
+    <p class="pub-venue">{pub.venueFull}</p>
+    <div class="pub-links">
+      {links(pub).map((l) => <a href={l.url}>{l.label}</a>)}
+      <details class="bib">
+        <summary>BibTeX</summary>
+        <div class="bib-box">
+          <button type="button" class="bib-copy" data-bib={bib}>Copy</button>
+          <pre>{bib}</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+</li>

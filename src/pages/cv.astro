@@ -1,0 +1,93 @@
+---
+import "../styles/cv.css";
+import CvSection from "../components/CvSection.astro";
+import {
+  education,
+  experience,
+  honors,
+  interests,
+  military,
+  projects,
+  references,
+  site,
+  skills,
+  teaching,
+} from "../data/site";
+import { publications } from "../data/publications";
+import { isMe, numbered } from "../lib/pubs";
+
+const pubs = numbered(publications);
+const firstCount = pubs.filter((p) => p.firstAuthor).length;
+const groups = [
+  { title: "Conference Papers", items: pubs.filter((p) => p.type === "conference") },
+  { title: "Journal Papers", items: pubs.filter((p) => p.type === "journal") },
+  { title: "Preprints", items: pubs.filter((p) => p.type === "preprint") },
+].filter((g) => g.items.length);
+
+const updated = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{site.name} — CV</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <header>
+      <h1>{site.name}</h1>
+      <p>{site.position}</p>
+      <p class="contact">
+        <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={Astro.site}>{Astro.site!.host}</a> ·
+        <a href={site.links.scholar}>Google Scholar</a> · {site.location}
+      </p>
+    </header>
+
+    <section>
+      <h2>Research Interests</h2>
+      <p>{interests.join(" · ")}</p>
+    </section>
+
+    <CvSection title="Education" items={education} />
+
+    <section>
+      <h2>Publications</h2>
+      <p class="note">{pubs.length} papers, {firstCount} as first author. * equal contribution.</p>
+      {
+        groups.map((g) => (
+          <>
+            <h3>{g.title}</h3>
+            {g.items.map((p) => (
+              <div class="entry pub">
+                <span class="period">[{p.label}]</span>
+                <div>
+                  {p.authors.map((a, i) => (
+                    <>
+                      {isMe(a) ? <strong>{a}</strong> : a}
+                      {i < p.authors.length - 1 && ", "}
+                    </>
+                  ))}{". "}<a href={p.doi ? `https://doi.org/${p.doi}` : `https://arxiv.org/abs/${p.arxiv}`}>{p.title}</a>.{" "}
+                  <em>{p.venueFull}</em>{p.type !== "preprint" && ` (${p.venue})`}{p.highlight && `, ${p.highlight}`}.
+                </div>
+              </div>
+            ))}
+          </>
+        ))
+      }
+    </section>
+
+    <CvSection title="Research Experience" items={experience} />
+    <CvSection title="Research Projects" items={projects} />
+    <CvSection title="Teaching" items={teaching} />
+    <CvSection title="Scholarships" items={honors} />
+    <CvSection title="Military Service" items={military} />
+    <section>
+      <h2>Skills</h2>
+      <p>{skills.join(", ")}</p>
+    </section>
+    <CvSection title="References" items={references} />
+
+    <footer>Last updated {updated}</footer>
+  </body>
+</html>

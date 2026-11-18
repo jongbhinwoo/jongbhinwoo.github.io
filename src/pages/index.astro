@@ -1,0 +1,129 @@
+---
+import Base from "../layouts/Base.astro";
+import Publication from "../components/Publication.astro";
+import Icon from "../components/Icon.astro";
+import Timeline from "../components/Timeline.astro";
+import EntryList from "../components/EntryList.astro";
+import { education, experience, interests, site, teaching } from "../data/site";
+import { publications } from "../data/publications";
+import { numbered } from "../lib/pubs";
+
+const pubs = numbered(publications);
+const firstCount = pubs.filter((p) => p.firstAuthor).length;
+const groups = [
+  { title: "Preprints", items: pubs.filter((p) => p.type === "preprint") },
+  { title: "Conference & Journal", items: pubs.filter((p) => p.type !== "preprint") },
+].filter((g) => g.items.length);
+
+const updated = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date());
+---
+
+<Base>
+  <nav class="topbar" aria-label="Sections">
+    <a class="topbar-name" href="#top">{site.name}</a>
+    <div class="topbar-links">
+      <a href="#about">About</a>
+      <a href="#publications">Publications</a>
+      <a href="#education">Education</a>
+      <a href="#experience">Experience</a>
+      {site.cv && <a href={site.cv}>CV</a>}
+      <button type="button" class="theme-toggle" aria-label="Toggle dark mode">◐</button>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-text">
+      <h1>{site.name}</h1>
+      <p class="position">{site.position}</p>
+      <nav class="hero-links" aria-label="Profiles">
+        <a class="btn primary" href={`mailto:${site.email}`}><Icon name="mail" />Email</a>
+        <a class="btn" href={site.links.scholar}><Icon name="scholar" />Google Scholar</a>
+        {site.cv && <a class="btn" href={site.cv}><Icon name="cv" />CV</a>}
+      </nav>
+    </div>
+    {site.photo && <img class="photo" src={site.photo} alt={`Portrait of ${site.name}`} />}
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About</h2>
+      <p>
+        I am a Ph.D. student in Electrical Engineering at KAIST, advised by
+        <a href={site.advisor.url}>{site.advisor.name}</a> in the <a href={site.lab.url}>{site.lab.name}</a>.
+        I am interested in how models understand video, audio, and language together, and in sign language
+        understanding.
+      </p>
+      <p>
+        So far I have worked on video temporal grounding, on aligning British Sign Language video with broadcast
+        subtitles, and on audio-visual LLMs. Along the way I have also become interested in evaluation, such as what
+        subtitle-alignment benchmarks miss when an interpreter leaves a subtitle unsigned.
+      </p>
+      <ul class="chips" aria-label="Research interests">
+        {interests.map((t) => <li>{t}</li>)}
+      </ul>
+    </section>
+
+    <section id="publications">
+      <div class="section-head">
+        <h2>Publications</h2>
+        <div class="pub-filter" role="group" aria-label="Filter publications">
+          <button type="button" data-filter="all" aria-pressed="true">All ({pubs.length})</button>
+          <button type="button" data-filter="first" aria-pressed="false">First-author ({firstCount})</button>
+        </div>
+      </div>
+      <p class="muted small">C = Conference · J = Journal · P = Preprint · * = Equal contribution</p>
+      {
+        groups.map((g) => (
+          <>
+            <h3 class="group-title">{g.title}</h3>
+            <ol class="pubs">
+              {g.items.map((p) => (
+                <Publication pub={p} />
+              ))}
+            </ol>
+          </>
+        ))
+      }
+    </section>
+
+    <Timeline id="education" title="Education" items={education} />
+    <EntryList id="experience" title="Experience" items={[...teaching, ...experience]} />
+  </main>
+
+  <footer>
+    <p>
+      <a href={`mailto:${site.email}`}>{site.email}</a> · {site.location}
+    </p>
+    <p>Last updated {updated}</p>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+      const dark = root.dataset.theme
+        ? root.dataset.theme === "dark"
+        : matchMedia("(prefers-color-scheme: dark)").matches;
+      root.dataset.theme = dark ? "light" : "dark";
+      localStorage.setItem("theme", root.dataset.theme);
+    });
+
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".pub-filter button");
+    buttons.forEach((btn) =>
+      btn.addEventListener("click", () => {
+        const firstOnly = btn.dataset.filter === "first";
+        buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        document.querySelectorAll<HTMLElement>(".pub").forEach((el) => {
+          el.hidden = firstOnly && el.dataset.first !== "true";
+        });
+      }),
+    );
+
+    document.querySelectorAll<HTMLButtonElement>(".bib-copy").forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(btn.dataset.bib ?? "");
+        btn.textContent = "Copied";
+        setTimeout(() => (btn.textContent = "Copy"), 1500);
+      }),
+    );
+  </script>
+</Base>

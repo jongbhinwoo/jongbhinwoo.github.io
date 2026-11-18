@@ -1,0 +1,25 @@
+---
+import type { Entry } from "../data/site";
+
+interface Props {
+  title: string;
+  items: Entry[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section>
+  <h2>{title}</h2>
+  {
+    items.map((e) => (
+      <div class="entry">
+        <span class="period">{e.period}</span>
+        <div>
+          <strong>{e.title}</strong>, {e.org}
+          {e.detail && <div class="detail">{e.detail}</div>}
+        </div>
+      </div>
+    ))
+  }
+</section>
