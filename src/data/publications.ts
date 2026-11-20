@@ -27,6 +27,7 @@ export const publications: Publication[] = [
     venueFull: "arXiv preprint arXiv:2611.25960",
     date: "2026-11-19",
     arxiv: "2611.25960",
+    thumb: "/pubs/when-sounds-turn-heads.webp",
   },
   {
     key: "woo2026signaligner",
