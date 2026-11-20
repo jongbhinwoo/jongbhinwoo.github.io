@@ -19,6 +19,16 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    key: "woo2026sounds",
+    type: "preprint",
+    title: "When Sounds Turn Heads: Recovering Event Timing That Audio LLMs Fail to Say",
+    authors: ["Jongbhin Woo*", "Jaewook Jeong*", "Joon Son Chung"],
+    venue: "Preprint",
+    venueFull: "arXiv preprint arXiv:2611.25960",
+    date: "2026-11-19",
+    arxiv: "2611.25960",
+  },
+  {
     key: "woo2026signaligner",
     type: "preprint",
     title: "SignAligner: Dual-Granularity Span Generation for Sign Language Alignment",
